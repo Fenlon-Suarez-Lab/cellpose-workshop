@@ -54,11 +54,15 @@ declare -a file_list
 for file in $INPUT_DIR/*.tif; do 
 	file_list+=("$file")
 done
+IFS='|'; joined_list="${file_list[*]}"; unset IFS
 
-# python $PY_SCRIPT ${file_list[@]} # DEPRECATED
-python3 -c 'import sys,' \
-           'sys.path.append("'(dirname $PY_SCRIPT)'"),' \
-           'import cellpose_counter,' \
-           'file_string = "'${file_list[@]}'",' \
-           'file_list = file_string.split(),' \
-           'cellpose_counter.cellpose3_count(file_list, diameter='$DIAMETER', model='$MODEL', outpath='$OUTPUT_DIR')'
+python3 - <<EOF
+import sys, os
+sys.path.append(os.path.dirname("$PY_SCRIPT"))
+import cellpose_counter
+file_list = "$joined_list".split('|')
+cellpose_counter.cellpose3_count(file_list,
+                                 diameter = $DIAMETER,
+                                 model = "$MODEL",
+                                 outpath = "$OUTPUT_DIR")
+EOF
