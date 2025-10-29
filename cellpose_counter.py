@@ -7,10 +7,10 @@ from cellpose.io import imread, masks_flows_to_seg, save_rois, save_masks
 
 ################# Cellpose SAM #################
 
-def cellposeSAM_counter(input_files):
+def cellposeSAM_counter(input_files, model = 'cpsam', outpath = None):
     # Initialise cellpose model
     model = models.CellposeModel(gpu = True, 
-                                 pretrained_model = 'cpsam')
+                                 pretrained_model = model)
     images = [imread(f) for f in input_files]
     normalize_params = {
         "lowhigh" : None,
@@ -48,10 +48,10 @@ def cellposeSAM_counter(input_files):
 
 ################# Cellpose 3 #################
 
-def cellpose3_counter(input_files, diameter = 30, outpath = None):
+def cellpose3_counter(input_files, diameter = 30, model = 'cyto3', outpath = None):
     # Initialise cellpose model
     model = models.CellposeModel(gpu = True, 
-                                 pretrained_model = 'cyto3', 
+                                 pretrained_model = model, 
                                  nchan = 2, 
                                  diam_mean = diameter)
     images = [imread(f) for f in input_files]

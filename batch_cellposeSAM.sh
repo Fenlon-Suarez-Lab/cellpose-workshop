@@ -14,8 +14,7 @@
 #SBATCH -o /home/%u/Logs/output-%j.log
 #SBATCH -e /home/%u/Logs/error-%j.log
 
-# gres options include:
-# l40 48GB - gpu:l40:1
+# Other gres options include:
 # a100 10GB slice - gpu:nvidia_a100_80gb_pcie_1g.10gb:1
 # a100 20GB slice - gpu:nvidia_a100_80gb_pcie_2g.20gb:1
 
@@ -25,9 +24,10 @@ module load cudnn/8.9.2.26-cuda-12.2.0
 module load miniforge/24.11.3-0
 
 # Parse options
-while getopts "d:" opt; do
+while getopts "d:m::" opt; do
     case $opt in
         d) DIAMETER=$OPTARG ;;
+        m) MODEL=$OPTARG ;;
         \?) echo "invalid option: -$OPTARG" >&2; exit 1 ;;
     esac
 done
@@ -38,14 +38,19 @@ conda-activate
 conda activate /sw/local/rocky8/noarch/rcc/software/cellpose/4
 
 # Set scripts and directories
-PY_SCRIPT="$HOME/Software/HPC/HPC_atlas/Python/cellpose_counter.py"
-INPUT_DIR="/QRISdata/Q7597/processing/cellpose_in"
-OUTPUT_DIR="/QRISdata/Q7597/analysis"
+PY_SCRIPT="$HOME/Software/cellpose-workshop/cellpose_counter.py"
+INPUT_DIR="/QRISdata/Q7021/Cellpose/test_in"
+OUTPUT_DIR="/QRISdata/Q7021/Cellpose/test_out"
+MODEL_DIR="/QRISdata/Q7021/Cellpose/Cellpose-SAM/models"
 
-# Init arrays
-declare -a file_list
+if [[ -z $MODEL ]]; then
+    MODEL="cpsam"
+else
+    MODEL="${MODEL_DIR}/${MODEL}"
+fi
 
 # Build file list from input directory
+declare -a file_list
 for file in $INPUT_DIR/*.tif; do 
 	file_list+=("$file")
 done
@@ -56,4 +61,4 @@ python3 -c 'import sys,' \
            'import cellpose_counter,' \
            'file_string = "'${file_list[@]}'",' \
            'file_list = file_string.split(),' \
-           'cellpose_counter.cellposeSAM_count(file_list)'
+           'cellpose_counter.cellposeSAM_count(file_list, model='$MODEL', outpath='$OUTPUT_DIR')'
