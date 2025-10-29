@@ -7,7 +7,7 @@ from cellpose.io import imread, masks_flows_to_seg, save_rois, save_masks
 
 ################# Cellpose SAM #################
 
-def cellposeSAM_counter(input_files, model = 'cpsam', outpath = None):
+def cellposeSAM_count(input_files, model = 'cpsam', outpath = None):
     # Initialise cellpose model
     model = models.CellposeModel(gpu = True, 
                                  pretrained_model = model)
@@ -32,6 +32,7 @@ def cellposeSAM_counter(input_files, model = 'cpsam', outpath = None):
     basenames = [os.path.splitext(os.path.basename(f))[0] for f in input_files]
     npy_names = [os.path.splitext(f)[0] + '.npy' for f in input_files]
     png_names = [os.path.splitext(f)[0] + '.png' for f in input_files]
+    rois_names = [os.path.splitext(f)[0] + '_rois.zip' for f in input_files]
     
     # Write counts per file to csv
     with open(outpath + '/cellposeSAM_counts.csv', 'w' ,newline = '') as csvfile:
@@ -41,14 +42,14 @@ def cellposeSAM_counter(input_files, model = 'cpsam', outpath = None):
             csvwriter.writerow([filename, cell_count])
 
     # Save other output files
-    masks_flows_to_seg(images, masks, flows, npy_names, diams = 30)
+    masks_flows_to_seg(images, masks, flows, npy_names)
     save_masks(images, masks, flows, png_names, png = True)
-    for rois, filename in zip(masks, basenames):
+    for rois, filename in zip(masks, rois_names):
         save_rois(rois, filename)
 
 ################# Cellpose 3 #################
 
-def cellpose3_counter(input_files, diameter = 30, model = 'cyto3', outpath = None):
+def cellpose3_count(input_files, diameter = 30, model = 'cyto3', outpath = None):
     # Initialise cellpose model
     model = models.CellposeModel(gpu = True, 
                                  pretrained_model = model, 
@@ -78,6 +79,7 @@ def cellpose3_counter(input_files, diameter = 30, model = 'cyto3', outpath = Non
     basenames = [os.path.splitext(os.path.basename(f))[0] for f in input_files]
     npy_names = [os.path.splitext(f)[0] + '.npy' for f in input_files]
     png_names = [os.path.splitext(f)[0] + '.png' for f in input_files]
+    rois_names = [os.path.splitext(f)[0] + '_rois.zip' for f in input_files]
     
     # Write counts per file to csv
     with open(outpath + '/cellpose3_counts.csv', 'w', newline = '') as csvfile:
@@ -89,7 +91,7 @@ def cellpose3_counter(input_files, diameter = 30, model = 'cyto3', outpath = Non
     # Write other output files
     masks_flows_to_seg(images, masks, flows, npy_names, diams = diameter)
     save_masks(images, masks, flows, png_names, png = True)
-    for rois, filename in zip(masks, basenames):
+    for rois, filename in zip(masks, rois_names):
         save_rois(rois, filename)
 
 if __name__=="__main__":
