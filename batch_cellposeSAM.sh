@@ -8,8 +8,8 @@
 #SBATCH --job-name=cellpose_counts
 #SBATCH --time=01:00:00
 #SBATCH --partition=gpu_cuda
-#SBATCH --qos=gpu
-#SBATCH --gres=gpu:l40:1
+#SBATCH --qos=debug
+#SBATCH --gres=gpu:nvidia_a100_80gb_pcie_1g.10gb:1
 #SBATCH --account=a_suarez
 #SBATCH -o /home/%u/Logs/output-%j.log
 #SBATCH -e /home/%u/Logs/error-%j.log
