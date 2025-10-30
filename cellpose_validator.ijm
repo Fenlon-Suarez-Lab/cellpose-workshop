@@ -140,8 +140,8 @@ function processFile(path) {
 			close("Mask");
 		}
 		d = nResults() - (a + b + c);
-		sensitivity = a/(a+b);
-		specificity = a/(a+c+d);
+		specificity = a/(a+b);
+		sensitivity = a/(a+c+d);
 		agreement = a/nResults();
 		print("Total human counts: "+nResults());
 		print("tp: "+a);
