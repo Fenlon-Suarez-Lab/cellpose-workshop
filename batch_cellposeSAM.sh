@@ -24,9 +24,8 @@ module load cudnn/8.9.2.26-cuda-12.2.0
 module load miniforge/24.11.3-0
 
 # Parse options
-while getopts "d:m::" opt; do
+while getopts "m::" opt; do
     case $opt in
-        d) DIAMETER=$OPTARG ;;
         m) MODEL=$OPTARG ;;
         \?) echo "invalid option: -$OPTARG" >&2; exit 1 ;;
     esac
@@ -56,6 +55,11 @@ for file in $INPUT_DIR/*.tif; do
 done
 IFS='|'; joined_list="${file_list[*]}"; unset IFS
 
+echo "Running CellposeSAM cell counter..."
+echo "MODEL is set to: $MODEL"
+echo "File list to be processed is:" 
+printf "%s\n" ${file_list[@]}
+
 python3 - <<EOF
 import sys, os
 sys.path.append(os.path.dirname("$PY_SCRIPT"))
@@ -65,3 +69,5 @@ cellpose_counter.cellposeSAM_count(file_list,
                                  model = "$MODEL",
                                  outpath = "$OUTPUT_DIR")
 EOF
+echo
+echo "CellposeSAM processing complete."

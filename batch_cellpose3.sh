@@ -56,6 +56,11 @@ for file in $INPUT_DIR/*.tif; do
 done
 IFS='|'; joined_list="${file_list[*]}"; unset IFS
 
+echo "Running Cellpose3 cell counter..."
+echo "MODEL is set to: $MODEL"
+echo "File list to be processed is:" 
+printf "%s\n" ${file_list[@]}
+
 python3 - <<EOF
 import sys, os
 sys.path.append(os.path.dirname("$PY_SCRIPT"))
@@ -66,3 +71,5 @@ cellpose_counter.cellpose3_count(file_list,
                                  model = "$MODEL",
                                  outpath = "$OUTPUT_DIR")
 EOF
+echo
+echo "Cellpose3 processing complete."
