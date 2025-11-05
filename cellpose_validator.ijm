@@ -139,7 +139,7 @@ function processFile(path) {
     		print("w flag is: "+w);
 			close("Mask");
 		}
-		d = nResults() - (a + b + c);
+		d = nResults() - (a + c);
 		specificity = a/(a+b);
 		sensitivity = a/(a+c+d);
 		agreement = a/nResults();
