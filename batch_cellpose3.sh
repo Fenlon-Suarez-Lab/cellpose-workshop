@@ -15,7 +15,7 @@
 #SBATCH -e /home/%u/Logs/error-%j.log
 
 # Other gres options include:
-# a100 10GB slice - gpu:nvidia_a100_80gb_pcie_1g.10gb:1
+# l40 48GB slice - gpu:l40:1
 # a100 20GB slice - gpu:nvidia_a100_80gb_pcie_2g.20gb:1
 
 # Load modules
